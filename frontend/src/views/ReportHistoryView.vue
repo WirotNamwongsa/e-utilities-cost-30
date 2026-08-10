@@ -87,6 +87,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import Navbar from '@/components/layout/Navbar.vue'
 import Sidebar from '@/components/layout/Sidebar.vue'
 import ComparisonChart from '@/components/charts/ComparisonChart.vue'
@@ -94,6 +95,7 @@ import CategoryChart from '@/components/charts/CategoryChart.vue'
 import BudgetChart from '@/components/charts/BudgetChart.vue'
 import api from '@/services/api'
 
+const route = useRoute()
 const sidebarRef = ref(null)
 const isMobileMenuOpen = ref(false)
 const currentYear = new Date().getFullYear()
