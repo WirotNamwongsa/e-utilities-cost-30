@@ -62,19 +62,32 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const authStore = useAuthStore()
 const router = useRouter()
-const mobileMenuOpen = ref(false)
+const mobileMenuOpen = ref(props.modelValue)
 
-const emit = defineEmits(['toggle-mobile-menu'])
+const emit = defineEmits(['toggle-mobile-menu', 'update:modelValue'])
+
+watch(() => props.modelValue, (value) => {
+  mobileMenuOpen.value = value
+})
 
 function toggleMobileMenu() {
-  mobileMenuOpen.value = !mobileMenuOpen.value
-  emit('toggle-mobile-menu', mobileMenuOpen.value)
+  const nextValue = !mobileMenuOpen.value
+  mobileMenuOpen.value = nextValue
+  emit('toggle-mobile-menu', nextValue)
+  emit('update:modelValue', nextValue)
 }
 
 async function handleLogout() {

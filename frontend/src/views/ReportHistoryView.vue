@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <Navbar @toggle-mobile-menu="handleMobileMenuToggle" />
+    <Navbar v-model="isMobileMenuOpen" @toggle-mobile-menu="handleMobileMenuToggle" />
     <Sidebar ref="sidebarRef" />
     <main class="lg:ml-64 pt-16 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto">
@@ -86,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import Navbar from '@/components/layout/Navbar.vue'
 import Sidebar from '@/components/layout/Sidebar.vue'
 import ComparisonChart from '@/components/charts/ComparisonChart.vue'
@@ -95,6 +95,7 @@ import BudgetChart from '@/components/charts/BudgetChart.vue'
 import api from '@/services/api'
 
 const sidebarRef = ref(null)
+const isMobileMenuOpen = ref(false)
 const currentYear = new Date().getFullYear()
 const years = computed(() => {
   const yearList = []
@@ -121,6 +122,7 @@ function formatCurrency(amount) {
 }
 
 function handleMobileMenuToggle(isOpen) {
+  isMobileMenuOpen.value = isOpen
   if (sidebarRef.value) {
     if (isOpen) {
       sidebarRef.value.toggleMobileMenu()
@@ -129,6 +131,13 @@ function handleMobileMenuToggle(isOpen) {
     }
   }
 }
+
+watch(() => route.path, () => {
+  isMobileMenuOpen.value = false
+  if (sidebarRef.value) {
+    sidebarRef.value.closeMobileMenu()
+  }
+})
 
 async function fetchComparison() {
   try {
