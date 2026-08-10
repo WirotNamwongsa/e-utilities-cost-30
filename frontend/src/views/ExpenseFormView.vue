@@ -1,16 +1,16 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <Navbar />
-    <Sidebar />
-    <main class="ml-64 pt-16 p-6">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+    <Navbar @toggle-mobile-menu="handleMobileMenuToggle" />
+    <Sidebar ref="sidebarRef" />
+    <main class="lg:ml-64 pt-16 p-4 sm:p-6 transition-all duration-300">
       <div class="max-w-3xl mx-auto">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold gradient-text mb-4 sm:mb-6">
           {{ isEdit ? 'แก้ไขรายการค่าใช้จ่าย' : 'เพิ่มรายการค่าใช้จ่ายใหม่' }}
         </h1>
 
-        <div class="card">
-          <form @submit.prevent="handleSubmit" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card-gradient">
+          <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label class="label">ประเภทค่าใช้จ่าย *</label>
                 <select v-model="form.expense_category_id" class="input" required>
@@ -92,17 +92,17 @@
               ></textarea>
             </div>
 
-            <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            <div v-if="error" class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
               {{ error }}
             </div>
 
-            <div class="flex justify-end space-x-4">
-              <router-link to="/expenses" class="btn btn-secondary">
+            <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
+              <router-link to="/expenses" class="btn btn-secondary w-full sm:w-auto">
                 ยกเลิก
               </router-link>
               <button
                 type="submit"
-                class="btn btn-primary"
+                class="btn btn-primary w-full sm:w-auto"
                 :disabled="loading"
               >
                 {{ loading ? 'กำลังบันทึก...' : (isEdit ? 'บันทึกการแก้ไข' : 'บันทึก') }}
@@ -127,6 +127,17 @@ const router = useRouter()
 const route = useRoute()
 const expenseStore = useExpenseStore()
 const categoryStore = useCategoryStore()
+const sidebarRef = ref(null)
+
+function handleMobileMenuToggle(isOpen) {
+  if (sidebarRef.value) {
+    if (isOpen) {
+      sidebarRef.value.toggleMobileMenu()
+    } else {
+      sidebarRef.value.closeMobileMenu()
+    }
+  }
+}
 
 const isEdit = computed(() => !!route.params.id)
 const loading = ref(false)

@@ -1,5 +1,15 @@
 <template>
-  <aside class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white w-64 min-h-screen fixed left-0 top-16 shadow-2xl border-r border-white/10">
+  <!-- Mobile overlay -->
+  <div 
+    v-if="mobileMenuOpen"
+    @click="closeMobileMenu"
+    class="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity"
+  ></div>
+
+  <aside 
+    class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white min-h-screen fixed left-0 top-16 shadow-2xl border-r border-white/10 z-50 transition-transform duration-300 w-64"
+    :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+  >
     <nav class="p-6">
       <div class="mb-6">
         <h2 class="text-xs font-bold text-white/50 uppercase tracking-wider mb-4">เมนูหลัก</h2>
@@ -7,6 +17,7 @@
           <li>
             <router-link
               to="/"
+              @click="closeMobileMenu"
               class="flex items-center px-4 py-3 rounded-xl transition-all duration-300 group hover:scale-105"
               :class="$route.path === '/' ? 'bg-gradient-primary shadow-lg shadow-primary-500/30' : 'hover:bg-white/10'"
             >
@@ -22,6 +33,7 @@
           <li>
             <router-link
               to="/expenses"
+              @click="closeMobileMenu"
               class="flex items-center px-4 py-3 rounded-xl transition-all duration-300 group hover:scale-105"
               :class="$route.path.startsWith('/expenses') ? 'bg-gradient-secondary shadow-lg shadow-accent-500/30' : 'hover:bg-white/10'"
             >
@@ -43,6 +55,7 @@
           <li>
             <router-link
               to="/settings/expense-categories"
+              @click="closeMobileMenu"
               class="flex items-center px-4 py-3 rounded-xl transition-all duration-300 group hover:scale-105"
               :class="$route.path.includes('expense-categories') ? 'bg-gradient-accent shadow-lg shadow-cyan-500/30' : 'hover:bg-white/10'"
             >
@@ -58,6 +71,7 @@
           <li>
             <router-link
               to="/settings/budget-categories"
+              @click="closeMobileMenu"
               class="flex items-center px-4 py-3 rounded-xl transition-all duration-300 group hover:scale-105"
               :class="$route.path.includes('budget-categories') ? 'bg-gradient-warm shadow-lg shadow-orange-500/30' : 'hover:bg-white/10'"
             >
@@ -79,6 +93,7 @@
           <li>
             <router-link
               to="/reports"
+              @click="closeMobileMenu"
               class="flex items-center px-4 py-3 rounded-xl transition-all duration-300 group hover:scale-105"
               :class="$route.path === '/reports' ? 'bg-gradient-to-r from-vibrant-pink to-vibrant-purple shadow-lg shadow-pink-500/30' : 'hover:bg-white/10'"
             >
@@ -98,7 +113,23 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = useAuthStore()
+const mobileMenuOpen = ref(false)
+
+function closeMobileMenu() {
+  mobileMenuOpen.value = false
+}
+
+function toggleMobileMenu() {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+// Expose function to parent
+defineExpose({
+  toggleMobileMenu,
+  closeMobileMenu
+})
 </script>

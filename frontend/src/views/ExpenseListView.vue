@@ -1,19 +1,19 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <Navbar />
-    <Sidebar />
-    <main class="ml-64 pt-16 p-6">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+    <Navbar @toggle-mobile-menu="handleMobileMenuToggle" />
+    <Sidebar ref="sidebarRef" />
+    <main class="lg:ml-64 pt-16 p-4 sm:p-6 transition-all duration-300">
       <div class="max-w-7xl mx-auto">
-        <div class="flex justify-between items-center mb-6">
-          <h1 class="text-2xl font-bold text-gray-900">รายการค่าใช้จ่าย</h1>
-          <router-link to="/expenses/create" class="btn btn-primary">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-4">
+          <h1 class="text-2xl sm:text-3xl font-bold gradient-text">รายการค่าใช้จ่าย</h1>
+          <router-link to="/expenses/create" class="btn btn-primary w-full sm:w-auto">
             + เพิ่มรายการใหม่
           </router-link>
         </div>
 
         <!-- Filters -->
-        <div class="card mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="card-gradient mb-4 sm:mb-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label class="label">เดือน</label>
               <select v-model="filters.month" class="input" @change="applyFilters">
@@ -58,87 +58,89 @@
         </div>
 
         <!-- Expenses Table -->
-        <div class="card overflow-x-auto">
+        <div class="card-gradient overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   เดือนบิล
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   ประเภท
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                   หมวดเงิน
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   จำนวนเงิน
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   วันที่ชำระ
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                   ผู้บันทึก
                 </th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   จัดการ
                 </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-if="expenseStore.loading">
-                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                <td colspan="7" class="px-4 sm:px-6 py-4 text-center text-gray-500">
                   กำลังโหลด...
                 </td>
               </tr>
               <tr v-else-if="expenseStore.expenses.length === 0">
-                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                <td colspan="7" class="px-4 sm:px-6 py-4 text-center text-gray-500">
                   ไม่พบรายการ
                 </td>
               </tr>
               <tr v-else v-for="expense in expenseStore.expenses" :key="expense.id">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {{ formatDate(expense.billing_month) }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {{ expense.expense_category?.name }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden sm:table-cell">
                   {{ expense.budget_category?.name }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {{ formatCurrency(expense.amount) }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
                   {{ expense.paid_date ? formatDate(expense.paid_date) : '-' }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
                   {{ expense.creator?.full_name }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <router-link
-                    :to="`/expenses/${expense.id}/edit`"
-                    class="text-primary-600 hover:text-primary-900 mr-3"
-                  >
-                    แก้ไข
-                  </router-link>
-                  <button
-                    @click="handleDelete(expense.id)"
-                    class="text-red-600 hover:text-red-900"
-                  >
-                    ลบ
-                  </button>
+                <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex flex-col sm:flex-row items-center justify-end space-y-1 sm:space-y-0 sm:space-x-2">
+                    <router-link
+                      :to="`/expenses/${expense.id}/edit`"
+                      class="text-primary-600 hover:text-primary-900 text-xs sm:text-sm"
+                    >
+                      แก้ไข
+                    </router-link>
+                    <button
+                      @click="handleDelete(expense.id)"
+                      class="text-red-600 hover:text-red-900 text-xs sm:text-sm"
+                    >
+                      ลบ
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
 
           <!-- Pagination -->
-          <div v-if="expenseStore.pagination.totalPages > 1" class="flex justify-between items-center mt-4 px-6">
+          <div v-if="expenseStore.pagination.totalPages > 1" class="flex flex-col sm:flex-row justify-between items-center mt-4 px-4 sm:px-6 gap-4">
             <button
               @click="changePage(expenseStore.pagination.page - 1)"
               :disabled="expenseStore.pagination.page === 1"
-              class="btn btn-secondary"
+              class="btn btn-secondary w-full sm:w-auto"
               :class="{ 'opacity-50 cursor-not-allowed': expenseStore.pagination.page === 1 }"
             >
               ก่อนหน้า
@@ -149,7 +151,7 @@
             <button
               @click="changePage(expenseStore.pagination.page + 1)"
               :disabled="expenseStore.pagination.page === expenseStore.pagination.totalPages"
-              class="btn btn-secondary"
+              class="btn btn-secondary w-full sm:w-auto"
               :class="{ 'opacity-50 cursor-not-allowed': expenseStore.pagination.page === expenseStore.pagination.totalPages }"
             >
               ถัดไป
@@ -172,6 +174,17 @@ import { useCategoryStore } from '@/stores/category'
 const router = useRouter()
 const expenseStore = useExpenseStore()
 const categoryStore = useCategoryStore()
+const sidebarRef = ref(null)
+
+function handleMobileMenuToggle(isOpen) {
+  if (sidebarRef.value) {
+    if (isOpen) {
+      sidebarRef.value.toggleMobileMenu()
+    } else {
+      sidebarRef.value.closeMobileMenu()
+    }
+  }
+}
 
 const filters = ref({
   month: '',
