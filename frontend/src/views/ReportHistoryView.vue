@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <Navbar />
-    <Sidebar />
+    <Navbar @toggle-mobile-menu="handleMobileMenuToggle" />
+    <Sidebar ref="sidebarRef" />
     <main class="lg:ml-64 pt-16 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto">
         <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">รายงานย้อนหลัง</h1>
@@ -94,6 +94,7 @@ import CategoryChart from '@/components/charts/CategoryChart.vue'
 import BudgetChart from '@/components/charts/BudgetChart.vue'
 import api from '@/services/api'
 
+const sidebarRef = ref(null)
 const currentYear = new Date().getFullYear()
 const years = computed(() => {
   const yearList = []
@@ -117,6 +118,16 @@ function formatCurrency(amount) {
     style: 'currency',
     currency: 'THB'
   }).format(amount)
+}
+
+function handleMobileMenuToggle(isOpen) {
+  if (sidebarRef.value) {
+    if (isOpen) {
+      sidebarRef.value.toggleMobileMenu()
+    } else {
+      sidebarRef.value.closeMobileMenu()
+    }
+  }
 }
 
 async function fetchComparison() {

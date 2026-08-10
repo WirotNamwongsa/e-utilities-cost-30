@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <Navbar />
-    <Sidebar />
+    <Navbar @toggle-mobile-menu="handleMobileMenuToggle" />
+    <Sidebar ref="sidebarRef" />
     <main class="lg:ml-64 pt-16 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto">
         <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
@@ -124,6 +124,7 @@ import { useCategoryStore } from '@/stores/category'
 
 const route = useRoute()
 const categoryStore = useCategoryStore()
+const sidebarRef = ref(null)
 
 const isExpenseCategory = computed(() => route.path.includes('expense-categories'))
 const categories = computed(() => 
@@ -135,6 +136,16 @@ const newCategory = ref({
   code: '',
   unit: ''
 })
+
+function handleMobileMenuToggle(isOpen) {
+  if (sidebarRef.value) {
+    if (isOpen) {
+      sidebarRef.value.toggleMobileMenu()
+    } else {
+      sidebarRef.value.closeMobileMenu()
+    }
+  }
+}
 
 async function handleCreate() {
   try {
