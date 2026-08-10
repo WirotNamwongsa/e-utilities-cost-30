@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mariadb:
     image: mariadb:11
@@ -16,10 +14,11 @@ services:
     networks:
       - e-utilities-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -31,8 +30,7 @@ services:
     ports:
       - "8081:80"
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - mariadb
     networks:
       - e-utilities-network
 
@@ -54,8 +52,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - mariadb
     networks:
       - e-utilities-network
     restart: unless-stopped
