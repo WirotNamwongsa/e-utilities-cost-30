@@ -2,14 +2,14 @@
   <div class="min-h-screen bg-gray-50">
     <Navbar />
     <Sidebar />
-    <main class="ml-64 pt-16 p-6">
+    <main class="lg:ml-64 pt-16 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">รายงานย้อนหลัง</h1>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">รายงานย้อนหลัง</h1>
 
         <!-- Year Comparison -->
         <div class="card mb-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">เปรียบเทียบระหว่างปี</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
             <div>
               <label class="label">ปีที่ 1</label>
               <select v-model="comparison.year1" class="input" @change="fetchComparison">
@@ -23,14 +23,14 @@
               </select>
             </div>
             <div class="flex items-end">
-              <button @click="fetchComparison" class="btn btn-primary w-full">
+              <button @click="fetchComparison" class="btn btn-primary w-full lg:w-auto">
                 เปรียบเทียบ
               </button>
             </div>
           </div>
 
           <div v-if="comparisonData" class="mt-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 mb-6">
               <div class="bg-blue-50 p-4 rounded-lg">
                 <h3 class="text-sm font-medium text-gray-600 mb-1">ปี {{ comparisonData.year1.year }}</h3>
                 <p class="text-2xl font-bold text-blue-600">
@@ -61,7 +61,7 @@
         <!-- Historical Summary by Year -->
         <div class="card">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">สรุปยอดรายปี</h2>
-          <div class="mb-4">
+          <div class="mb-4 max-w-md">
             <label class="label">เลือกปี</label>
             <select v-model="selectedYear" class="input" @change="fetchYearData">
               <option v-for="y in years" :key="y" :value="y">{{ y }}</option>

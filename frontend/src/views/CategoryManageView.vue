@@ -2,16 +2,16 @@
   <div class="min-h-screen bg-gray-50">
     <Navbar />
     <Sidebar />
-    <main class="ml-64 pt-16 p-6">
+    <main class="lg:ml-64 pt-16 p-4 sm:p-6">
       <div class="max-w-7xl mx-auto">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
           {{ isExpenseCategory ? 'จัดการประเภทค่าใช้จ่าย' : 'จัดการหมวดเงินงบประมาณ' }}
         </h1>
 
         <!-- Add New Category -->
         <div class="card mb-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">เพิ่ม{{ isExpenseCategory ? 'ประเภทค่าใช้จ่าย' : 'หมวดเงินงบประมาณ' }}ใหม่</h2>
-          <form @submit.prevent="handleCreate" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <form @submit.prevent="handleCreate" class="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4">
             <div>
               <label class="label">ชื่อ *</label>
               <input
@@ -41,10 +41,10 @@
                 placeholder="หน่วย (เช่น บาท)"
               />
             </div>
-            <div class="md:col-span-3">
+            <div class="xl:col-span-3">
               <button
                 type="submit"
-                class="btn btn-primary"
+                class="btn btn-primary w-full sm:w-auto"
                 :disabled="categoryStore.loading"
               >
                 {{ categoryStore.loading ? 'กำลังบันทึก...' : 'เพิ่ม' }}
@@ -58,19 +58,20 @@
           <h2 class="text-lg font-semibold text-gray-900 mb-4">
             รายการ{{ isExpenseCategory ? 'ประเภทค่าใช้จ่าย' : 'หมวดเงินงบประมาณ' }}
           </h2>
-          <table class="min-w-full divide-y divide-gray-200">
+          <div class="overflow-x-auto">
+            <table class="min-w-[560px] w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   ชื่อ
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   รหัส
                 </th>
-                <th v-if="isExpenseCategory" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th v-if="isExpenseCategory" class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   หน่วย
                 </th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   จัดการ
                 </th>
               </tr>
@@ -87,16 +88,16 @@
                 </td>
               </tr>
               <tr v-else v-for="category in categories" :key="category.id">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {{ category.name }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ category.code }}
                 </td>
-                <td v-if="isExpenseCategory" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td v-if="isExpenseCategory" class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ category.unit || '-' }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
                     @click="handleDelete(category.id)"
                     class="text-red-600 hover:text-red-900"
@@ -106,7 +107,8 @@
                 </td>
               </tr>
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       </div>
     </main>
