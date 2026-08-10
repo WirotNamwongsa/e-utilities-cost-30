@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: e-utilities-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: e_utilities_cost
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - e-utilities-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: e-utilities-phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 100M
+    ports:
+      - "8081:80"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - e-utilities-network
+
+  backend:
+    build: ./backend
+    container_name: e-utilities-backend
+    image: ${DOCKER_HUB_USERNAME}/e-utilities-cost-backend:latest
+    environment:
+      NODE_ENV: production
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: e_utilities_cost
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ACCESS_EXPIRY: 1h
+      JWT_REFRESH_EXPIRY: 7d
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - e-utilities-network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: e-utilities-frontend
+    image: ${DOCKER_HUB_USERNAME}/e-utilities-cost-frontend:latest
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - e-utilities-network
+    restart: unless-stopped
+
+volumes:
+  mariadb_data:
+
+networks:
+  e-utilities-network:
+    driver: bridge
