@@ -18,6 +18,19 @@ const seedData = async () => {
     });
     console.log('Admin user created or already exists');
 
+    // Create default staff user
+    const staffHashedPassword = await bcrypt.hash('staff123', 10);
+    const [staff] = await User.findOrCreate({
+      where: { username: 'staff' },
+      defaults: {
+        username: 'staff',
+        password: staffHashedPassword,
+        full_name: 'Staff User',
+        role: 'staff'
+      }
+    });
+    console.log('Staff user created or already exists');
+
     // Create expense categories
     const expenseCategories = [
       { name: 'ค่าไฟฟ้า', code: 'ELEC', unit: 'บาท' },

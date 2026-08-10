@@ -82,8 +82,17 @@
 
         <div class="mt-8 text-center text-sm text-gray-600 animate-slide-up" style="animation-delay: 0.5s;">
           <div class="bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/30">
-            <p class="font-medium text-gray-700 mb-1">เข้าสู่ระบบด้วย:</p>
-            <p class="gradient-text font-bold">ชื่อผู้ใช้: admin | รหัสผ่าน: admin123</p>
+            <p class="font-medium text-gray-700 mb-3">เข้าสู่ระบบด้วย:</p>
+            <div class="space-y-2">
+              <div class="flex items-center justify-center space-x-2">
+                <span class="text-xs font-semibold px-2 py-1 bg-gradient-primary text-white rounded-full">Admin</span>
+                <p class="gradient-text font-bold">ชื่อผู้ใช้: admin | รหัสผ่าน: admin123</p>
+              </div>
+              <div class="flex items-center justify-center space-x-2">
+                <span class="text-xs font-semibold px-2 py-1 bg-gradient-secondary text-white rounded-full">Staff</span>
+                <p class="gradient-text-secondary font-bold">ชื่อผู้ใช้: staff | รหัสผ่าน: staff123</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
