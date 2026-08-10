@@ -6,7 +6,7 @@
 
 แก้ไขไฟล์ `.env` บรรทัดนี้:
 
-```env
+``` env
 DOCKER_HUB_USERNAME=your_dockerhub_username_here
 ```
 
