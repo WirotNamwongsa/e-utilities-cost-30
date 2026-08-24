@@ -116,18 +116,15 @@
                   {{ expense.creator?.full_name }}
                 </td>
                 <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div class="flex flex-col sm:flex-row items-center justify-end space-y-1 sm:space-y-0 sm:space-x-2">
-                    <router-link
-                      :to="`/expenses/${expense.id}/edit`"
-                      class="text-primary-600 hover:text-primary-900 text-xs sm:text-sm"
-                    >
-                      แก้ไข
+                  <div class="flex items-center justify-end space-x-2">
+                    <router-link :to="`/expenses/${expense.id}/edit`" class="btn btn-secondary px-3 py-1 text-sm inline-flex items-center space-x-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"/></svg>
+                      <span>แก้ไข</span>
                     </router-link>
-                    <button
-                      @click="handleDelete(expense.id)"
-                      class="text-red-600 hover:text-red-900 text-xs sm:text-sm"
-                    >
-                      ลบ
+
+                    <button @click="handleDelete(expense.id)" class="btn btn-danger px-3 py-1 text-sm inline-flex items-center space-x-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H3a1 1 0 100 2h14a1 1 0 100-2h-2V3a1 1 0 00-1-1H6zm2 6a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 112 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd"/></svg>
+                      <span>ลบ</span>
                     </button>
                   </div>
                 </td>
