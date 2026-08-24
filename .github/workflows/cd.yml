@@ -11,7 +11,7 @@ env:
   DEPLOY_PATH: /home/${{ secrets.SSH_USER }}/apps/e-utilities-cost
   API_URL: /api
   FRONTEND_PUBLIC_URL: http://202.29.231.188:30098
-  BACKEND_PUBLIC_URL: http://202.29.231.188:300099
+  BACKEND_PUBLIC_URL: http://202.29.231.188:30099
 
 jobs:
   build-and-deploy:

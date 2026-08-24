@@ -31,7 +31,7 @@ services:
       PORT: 3000
       FRONTEND_URL: ${FRONTEND_URL}
     ports:
-      - "300099:3000"
+      - "30099:3000"
     depends_on:
       - mariadb
     networks:
