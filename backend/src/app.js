@@ -4,13 +4,14 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+const app = express();
+app.set('trust proxy', 1);
+
 const authRoutes = require('./routes/auth.routes');
 const expenseRoutes = require('./routes/expense.routes');
 const categoryRoutes = require('./routes/category.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const errorMiddleware = require('./middlewares/error.middleware');
-
-const app = express();
 
 // Security middleware
 app.use(helmet());
