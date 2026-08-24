@@ -113,7 +113,13 @@ const password = ref('')
 const loading = ref(false)
 const error = ref(null)
 
+let lastLoginTs = 0
 async function handleLogin() {
+  // prevent accidental double submissions
+  const now = Date.now()
+  if (loading.value || now - lastLoginTs < 800) return
+  lastLoginTs = now
+
   loading.value = true
   error.value = null
 
