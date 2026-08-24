@@ -9,7 +9,9 @@ env:
   BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/e-utilities-cost-backend
   FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/e-utilities-cost-frontend
   DEPLOY_PATH: ~/apps/e-utilities-cost
-  API_URL: http://202.29.231.188:30020/api
+  API_URL: /api
+  FRONTEND_PUBLIC_URL: http://202.29.231.188:30098
+  BACKEND_PUBLIC_URL: http://202.29.231.188:30099
 
 jobs:
   build-and-deploy:
@@ -18,6 +20,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          set -e
+          for name in DOCKERHUB_USERNAME DOCKERHUB_TOKEN SSH_HOST SSH_PORT SSH_USER SSH_PRIVATE_KEY DB_ROOT_PASSWORD DB_USER DB_PASSWORD JWT_SECRET; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required secret: $name"
+              exit 1
+            fi
+          done
+          echo "All required deployment secrets are set."
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -54,7 +68,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            mkdir -p ${{ env.DEPLOY_PATH }}
+            mkdir -p "${{ env.DEPLOY_PATH }}"
 
       - name: Copy production compose file
         uses: appleboy/scp-action@v0.1.7
@@ -74,15 +88,19 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ${{ env.DEPLOY_PATH }}
+            set -e
+            cd "${{ env.DEPLOY_PATH }}"
+
             cat > .env <<EOF
             DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
             DB_USER=${{ secrets.DB_USER }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             DOCKER_HUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-            FRONTEND_URL=http://202.29.231.188:8080
+            FRONTEND_URL=${{ env.FRONTEND_PUBLIC_URL }}
             EOF
 
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            docker compose -f docker-compose.prod.yml ps
+            curl -fsS "${{ env.FRONTEND_PUBLIC_URL }}/api/health" || true
