@@ -41,15 +41,20 @@
                 placeholder="หน่วย (เช่น บาท)"
               />
             </div>
-            <div class="xl:col-span-3">
-              <button
-                type="submit"
-                class="btn btn-primary w-full sm:w-auto"
-                :disabled="categoryStore.loading"
-              >
-                {{ categoryStore.loading ? 'กำลังบันทึก...' : 'เพิ่ม' }}
-              </button>
-            </div>
+            <div class="xl:col-span-3 flex items-center space-x-3">
+                <button
+                  type="submit"
+                  class="btn btn-primary w-full sm:w-auto"
+                  :disabled="categoryStore.loading"
+                >
+                  <span v-if="editingId">{{ categoryStore.loading ? 'กำลังบันทึก...' : 'บันทึกการแก้ไข' }}</span>
+                  <span v-else>{{ categoryStore.loading ? 'กำลังบันทึก...' : 'เพิ่ม' }}</span>
+                </button>
+
+                <button v-if="editingId" type="button" @click="handleCancel" class="btn btn-ghost w-full sm:w-auto">
+                  ยกเลิก
+                </button>
+              </div>
           </form>
         </div>
 
@@ -98,12 +103,14 @@
                   {{ category.unit || '-' }}
                 </td>
                 <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    @click="handleDelete(category.id)"
-                    class="text-red-600 hover:text-red-900"
-                  >
-                    ลบ
-                  </button>
+                  <div class="flex items-center justify-end space-x-2">
+                    <button @click="handleEdit(category)" class="btn btn-secondary px-3 py-1 text-sm">
+                      แก้ไข
+                    </button>
+                    <button @click="handleDelete(category.id)" class="btn btn-danger px-3 py-1 text-sm">
+                      ลบ
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -138,6 +145,8 @@ const newCategory = ref({
   unit: ''
 })
 
+const editingId = ref(null)
+
 function handleMobileMenuToggle(isOpen) {
   isMobileMenuOpen.value = isOpen
   if (sidebarRef.value) {
@@ -164,11 +173,23 @@ async function handleCreate() {
       ...(isExpenseCategory.value ? { unit: String(newCategory.value.unit || '').trim() } : {})
     }
 
-    if (isExpenseCategory.value) {
-      await categoryStore.createExpenseCategory(payload)
+    if (editingId.value) {
+      // update existing
+      if (isExpenseCategory.value) {
+        await categoryStore.updateExpenseCategory(editingId.value, payload)
+      } else {
+        await categoryStore.updateBudgetCategory(editingId.value, payload)
+      }
+      editingId.value = null
     } else {
-      await categoryStore.createBudgetCategory(payload)
+      // create new
+      if (isExpenseCategory.value) {
+        await categoryStore.createExpenseCategory(payload)
+      } else {
+        await categoryStore.createBudgetCategory(payload)
+      }
     }
+
     newCategory.value = { name: '', code: '', unit: '' }
   } catch (error) {
     alert('เกิดข้อผิดพลาดในการเพิ่มรายการ')
@@ -187,6 +208,21 @@ async function handleDelete(id) {
       alert('เกิดข้อผิดพลาดในการลบรายการ')
     }
   }
+}
+
+function handleEdit(category) {
+  editingId.value = category.id
+  newCategory.value = {
+    name: category.name || '',
+    code: category.code || '',
+    unit: category.unit || ''
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function handleCancel() {
+  editingId.value = null
+  newCategory.value = { name: '', code: '', unit: '' }
 }
 
 onMounted(async () => {
