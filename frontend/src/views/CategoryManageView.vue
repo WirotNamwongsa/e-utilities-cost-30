@@ -158,10 +158,16 @@ watch(() => route.path, () => {
 
 async function handleCreate() {
   try {
+    const payload = {
+      name: String(newCategory.value.name || '').trim(),
+      code: String(newCategory.value.code || '').trim().toUpperCase(),
+      ...(isExpenseCategory.value ? { unit: String(newCategory.value.unit || '').trim() } : {})
+    }
+
     if (isExpenseCategory.value) {
-      await categoryStore.createExpenseCategory(newCategory.value)
+      await categoryStore.createExpenseCategory(payload)
     } else {
-      await categoryStore.createBudgetCategory(newCategory.value)
+      await categoryStore.createBudgetCategory(payload)
     }
     newCategory.value = { name: '', code: '', unit: '' }
   } catch (error) {

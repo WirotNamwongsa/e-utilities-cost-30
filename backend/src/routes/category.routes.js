@@ -19,6 +19,7 @@ const categoryValidation = [
     .withMessage('Name must not exceed 150 characters'),
   body('code')
     .trim()
+    .customSanitizer((value) => value ? value.trim().toUpperCase() : value)
     .notEmpty()
     .withMessage('Code is required')
     .isLength({ max: 20 })
