@@ -23,11 +23,15 @@
   }
   
   .btn-secondary {
-    @apply bg-white/80 backdrop-blur-sm text-gray-800 border border-gray-200 hover:bg-white hover:border-primary-300;
+    @apply bg-white text-primary-600 font-semibold border border-gray-200 shadow-sm hover:bg-gray-50 hover:shadow-md;
   }
   
   .btn-danger {
-    @apply bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-2xl hover:shadow-red-500/30;
+    @apply bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold hover:shadow-lg;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-gray-700 border border-gray-200 hover:bg-gray-100;
   }
   
   .btn-accent {
