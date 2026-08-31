@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const app = express();
 app.set('trust proxy', 1);
-
+//db connection
 const authRoutes = require('./routes/auth.routes');
 const expenseRoutes = require('./routes/expense.routes');
 const categoryRoutes = require('./routes/category.routes');
